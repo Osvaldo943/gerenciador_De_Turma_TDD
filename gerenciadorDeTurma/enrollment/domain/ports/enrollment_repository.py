@@ -1,0 +1,15 @@
+from abc import ABC, abstractmethod
+from enrollment.domain.model.student import Student
+from typing import List
+
+class IEnrollmentRepository(ABC):
+    
+    @abstractmethod
+    def save(self, student: Student):
+        pass 
+    
+    @abstractmethod
+    def getAll(self)-> List[Student]:
+        pass
+    
+    
