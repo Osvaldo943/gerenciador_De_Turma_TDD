@@ -7,18 +7,18 @@ MAXIMUM_NUMBER_OF_STUDENTS = 4
 class Classroom():
     def __init__(self, students: List["Student"]):
 
-        if self.has_not_enough_students(len(students)):
-            raise ValueError("Alunos insuficiente")
-
+        if not self.has_enough_students(len(students)):
+            raise ValueError("Quantidade de aluno incorreta")
+        
         self.id = int(str(uuid.uuid4().int)[:8])
         self.students: list[Student] = students
 
-    def has_not_enough_students(self, numberOfStudent: int):
-        return numberOfStudent != MAXIMUM_NUMBER_OF_STUDENTS
+    def has_enough_students(self, numberOfStudent: int):
+        return numberOfStudent == MAXIMUM_NUMBER_OF_STUDENTS
     
     def getId(self):
-        return self.id
+        return str(self.id)
     
     def getStudents(self):
-        return self.students
+        return list(self.students)
             

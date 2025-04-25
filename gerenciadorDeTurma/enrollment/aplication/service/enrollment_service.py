@@ -24,21 +24,21 @@ class EnrollmentService(IEnrollment):
         self.event_bus.publish(events.studentEnrolled, {name, email, age})
         
         print("\n================================")
-        print("==>Sucesso: Usuário inscrito   <==")
+        print("==> Sucesso: Usuário inscrito <==")
         print("================================\n")
         
-        if self.policy.shouldCreateClassroom(len(self.enrollmentRepository.getAll())):
-            studentsEnrolled = self.enrollmentRepository.getAll()
+        if self.policy.shouldCreateClassroom(len(self.enrollmentRepository.getNotRegisteredStudents())):
+            studentsEnrolled = self.enrollmentRepository.getNotRegisteredStudents()
 
             newClassroom = Classroom(studentsEnrolled)
             self.save_classroom_in_repository(newClassroom)
-            self.enrollmentRepository.clear()
 
     def save_classroom_in_repository(self, classroom: "Classroom"):
-        self.classroomRepository.save(classroom)
+        self.classroomRepository.save(classroom.id)
+        self.enrollmentRepository.updateClassroomId(classroom.id)
 
         print("\n================================")
-        print("==>   Sucesso: Turma criada    <==")
+        print("==>  Sucesso: Turma criada   <==")
         print("==================================\n")
             
         self.event_bus.publish(events.classRoomCreated, classroom)

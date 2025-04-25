@@ -25,25 +25,29 @@ class CLI:
                     self.enrollmentService.enroll(name, email, age)    
                 
                 if(option == '2'):
-                    print("2-Lista de inscritos \n")
+                    print("2-Lista de inscritos")
+                    
+                    print(f"{'ID':>0} {'Nome':>32} {'Email':>30} {'Idade':>30} {'Registrado':>30}")
+                    print('-' * 100)
                     allStudents = self.enrollmentService.getAllStudents()
                     
                     for student in allStudents:
-                        print(student.name, "---", student.email, "---", student.age)
+                        print(f"{student.id:<30} {student.name:<30} {student.email.value():<30} {student.age :<30} {student.isRegistered :<30}")
                         
                 if(option == '3'):
                     print("\n3-Lista de turmas criadas:")
-                    
+                
                     allClassroom = self.enrollmentService.getAllClassroom()
                     
                     for classroom in allClassroom:
                         print("Turma: ", classroom.getId()) 
                         
+                        print(f"{'ID':>0} {'Nome':>32} {'Email':>30} {'Idade':>30} ")
+                        print('-' * 100)
                         for student in classroom.getStudents():
-                            print(student.name, student.age, student.email)
-                                
-                        
-                    
+                            print(student.name, student.age, student.email.value())
+                                        
+   
             except ValueError as e:
                 print(f"Erro -> ", {e})    
         

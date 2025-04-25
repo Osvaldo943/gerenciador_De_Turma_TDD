@@ -8,8 +8,7 @@ class Student():
         self.email: Email = email
         self.age = age
         self.isNotified = False
+        self.classroom_id = None
 
     def mark_as_notified(self):
         self.isNotified = True 
-
-

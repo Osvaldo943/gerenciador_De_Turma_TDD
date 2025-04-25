@@ -12,6 +12,13 @@ class IEnrollmentRepository(ABC):
     def getAll(self)-> List[Student]:
         pass
     
+    @abstractmethod
+    def getNotRegisteredStudents(self) -> List[Student]:
+        pass
+    
+    @abstractmethod
+    def updateClassroomId(self, classroom_id) -> None:
+        pass
     
     @abstractmethod
     def clear(self)-> List[Student]:
