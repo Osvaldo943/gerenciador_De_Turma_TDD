@@ -4,7 +4,7 @@ class Email():
     def __init__(self, value):
         if(not self.is_valid_email(value)):
             raise ValueError("Email inválido")
-        
+            print("Por favor adicione um email válido!")      
         self._value = value
     
     def is_valid_email(self, value):

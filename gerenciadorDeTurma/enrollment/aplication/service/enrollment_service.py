@@ -5,6 +5,7 @@ from enrollment.domain.ports.driving.enrollment import IEnrollment
 from enrollment.domain.ports.driven.classroom_repository import IClassroomRepository
 from enrollment.domain.ports.driven.enrollment_repository import IEnrollmentRepository
 from enrollment.domain.ports.driven.event_bus_publisher import IEventBusPublisher
+from enrollment.domain.ports.driven.payment_note_repository import IPaymentNoteRepository
 
 from enrollment.domain.events.events import events
 from enrollment.domain.policy.classroom_policy import ClassroomPolicy
@@ -12,10 +13,10 @@ from typing import List
 
  
 class EnrollmentService(IEnrollment):
-    def __init__(self, classroomRepository: IClassroomRepository, enrollmentRepository: IEnrollmentRepository, event_bus: IEventBusPublisher):
+    def __init__(self, classroomRepository: IClassroomRepository, classroomPolicy:ClassroomPolicy, enrollmentRepository: IEnrollmentRepository, event_bus: IEventBusPublisher):
         self.classroomRepository = classroomRepository
         self.enrollmentRepository = enrollmentRepository
-        self.policy = ClassroomPolicy()
+        self.policy = classroomPolicy
         self.event_bus = event_bus
 
     def enroll(self, name, email, age):
@@ -23,9 +24,9 @@ class EnrollmentService(IEnrollment):
         self.enrollmentRepository.save(student)
         self.event_bus.publish(events.studentEnrolled, {name, email, age})
         
-        print("\n================================")
+        print("\n=================================")
         print("==> Sucesso: Usuário inscrito <==")
-        print("================================\n")
+        print("=================================\n")
         
         if self.policy.shouldCreateClassroom(len(self.enrollmentRepository.getNotRegisteredStudents())):
             studentsEnrolled = self.enrollmentRepository.getNotRegisteredStudents()
@@ -39,7 +40,7 @@ class EnrollmentService(IEnrollment):
 
         print("\n================================")
         print("==>  Sucesso: Turma criada   <==")
-        print("==================================\n")
+        print("================================\n")
             
         self.event_bus.publish(events.classRoomCreated, classroom)
         

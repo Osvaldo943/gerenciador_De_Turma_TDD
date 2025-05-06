@@ -11,8 +11,20 @@ class EnrollmentRepository(IEnrollmentRepository):
         
         if not student.email in emails:
             self.enrolled_students.append(student)
-
-    def getAll(self):
+            
+    def getNotRegisteredStudents(self):
+        self.not_registered_students = []
+        
+        for student in self.enrolled_students:
+            if student.classroom_id == None:
+                self.not_registered_students.append(student)
+            
+        return list(self.not_registered_students)
+    
+    def updateClassroomId(self, classroom_id):
+        pass 
+    
+    def getAll(self)->List[Student]:
         return list(self.enrolled_students)
 
     def clear(self):

@@ -9,7 +9,7 @@ class SQLiteEnrollmentRepository(IEnrollmentRepository):
         super().__init__()
         self.conn = sqlite3.connect(db_path)
         self._create_table()
-        
+
     def _create_table(self):
         with self.conn:
             self.conn.execute("""
@@ -23,7 +23,7 @@ class SQLiteEnrollmentRepository(IEnrollmentRepository):
                 FOREIGN KEY (classroom_id) REFERENCES classrooms(id)
             )
             """)
-            
+
     def save(self, student: "Student"):
         with self.conn:
             self.conn.execute("""
@@ -33,17 +33,17 @@ class SQLiteEnrollmentRepository(IEnrollmentRepository):
                 email, 
                 age, 
                 is_notified,
-                classroom_id)
-            VALUES (?, ?, ?, ?, ?, ?, NULL)
+                classroom_id
+            ) VALUES (?, ?, ?, ?, ?, ?)
             """, (
-                student.id,
+                student.id, 
                 student.name, 
-                student.email,
-                student.age,
-                student.isNotified,
-                student.classroom_id,
+                student.email, 
+                student.age, 
+                student.isNotified, 
+                None 
             ))
-            
+
     def getAll(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT id, name, email, age, is_notified, classroom_id from enrolled_students")
@@ -54,38 +54,37 @@ class SQLiteEnrollmentRepository(IEnrollmentRepository):
             student = Student(name= row[1], email=Email(row[2]), age=row[3])
             student.id = row[0]
             student.isNotified = bool(row[4])
-            student.classroom_id = bool(row[5])
+            student.classroom_id = row[5] 
             students.append(student)
-            
+
         return students
-    
+
     def getNotRegisteredStudents(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT id, name, email, age, is_notified, classroom_id FROM enrolled_students WHERE classroom_id IS NULL")
         rows = cursor.fetchall()
-        
+
         notRegisteredStudents = []
-        
+
         for row in rows: 
             student = Student(name= row[1], email=Email(row[2]), age=row[3])
             student.id = row[0]
             student.isNotified = bool(row[4])
-            student.classroom_id = bool(row[5])
+            student.classroom_id = row[5]  
             notRegisteredStudents.append(student)
-            
+
         return notRegisteredStudents
-    
+
     def updateClassroomId(self, classroom_id):
         query = """
                 UPDATE enrolled_students 
                 SET classroom_id = ?
                 WHERE classroom_id IS NULL
             """
-            
+
         with self.conn:
             self.conn.execute(query, (classroom_id,))
-    
+
     def clear(self):
         with self.conn:
             self.conn.execute("DELETE FROM enrolled_students")
-            

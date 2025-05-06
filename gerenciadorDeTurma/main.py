@@ -1,5 +1,6 @@
 from enrollment.aplication.service.enrollment_service import EnrollmentService
 from enrollment.adapters.driven.classroom_repository import ClassroomRepository
+from enrollment.domain.policy.classroom_policy import ClassroomPolicy
 from enrollment.adapters.driven.enrollment_repository import EnrollmentRepository
 from enrollment.adapters.driven.payment_note_repository import PaymentNoteRepository
 from enrollment.adapters.driving.cli import CLI
@@ -8,28 +9,29 @@ from enrollment.aplication.service.payment_note_service import PaymentNoteServic
 from enrollment.adapters.driven.event_bus import EventBus
 from enrollment.domain.events.events import events
 from enrollment.adapters.driven.sql_enrollment_repository import SQLiteEnrollmentRepository
+from enrollment.adapters.driven.sql_classroom_repository import SQLiteclassroomRepository
+from enrollment.adapters.driven.sql_payment_note_repository import SQLitePaymentNoteReository
 
 if __name__ == "__main__":
-    print("=====================")
-    print("Sistema de Inscrição ")
-    print("=====================")
-    
-    inMemoryClassroomRepositoryAdapter = ClassroomRepository()
-    inMemoryEnrollmentRepositoryAdapter = EnrollmentRepository()
-    inMemoryPaymentRepositoryAdapter = PaymentNoteRepository()
+    print("="*60)
+    print(" "*15 + "Sistema de Inscrição ")
+    print("="*60) 
     
     sqlLiteEnrollmentRepositoryAdapter = SQLiteEnrollmentRepository()
+    sqlLiteClassroomRepositoryAdapter = SQLiteclassroomRepository()
+    sqlLitePaymnentNoteRepositoryAdapter = SQLitePaymentNoteReository()
     
+    classroomPolicy = ClassroomPolicy()
     eventBusAdapter = EventBus()
     notificationService = NotificationService(eventBusAdapter)
-    paymentService = PaymentNoteService(inMemoryPaymentRepositoryAdapter, eventBusAdapter)
+    paymentService = PaymentNoteService(sqlLitePaymnentNoteRepositoryAdapter, eventBusAdapter)
     
     eventBusAdapter.subscribe(events.classRoomCreated, lambda payload:  notificationService.notify(payload))
-    eventBusAdapter.subscribe(events.classRoomCreated, lambda payload:  paymentService.generate_payment_note(payload))
+    eventBusAdapter.subscribe(events.classRoomCreated, lambda payload:  paymentService.generate_payment_note(payload, 5000, "10/12/2025"))
     
-    enrollmentService = EnrollmentService(inMemoryClassroomRepositoryAdapter, sqlLiteEnrollmentRepositoryAdapter, eventBusAdapter)
+    enrollmentService = EnrollmentService(sqlLiteClassroomRepositoryAdapter, classroomPolicy, sqlLiteEnrollmentRepositoryAdapter, eventBusAdapter)
     
-    cli = CLI(enrollmentService)
+    cli = CLI(enrollmentService, paymentService)
     
     cli.run() 
     

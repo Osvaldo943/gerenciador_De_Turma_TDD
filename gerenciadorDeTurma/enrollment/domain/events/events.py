@@ -4,5 +4,6 @@ class Events ():
         self.studentEnrolled= "studentEnrolled"    
         self.studentRegistered= "studentRegistered"
         self.studentNotified= "studentNotified" 
+        self.paymentNoteGenerated = "paymentNoteGenerated"
 
 events = Events()
