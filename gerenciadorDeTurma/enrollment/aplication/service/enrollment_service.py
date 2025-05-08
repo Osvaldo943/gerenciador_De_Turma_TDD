@@ -1,3 +1,4 @@
+import re 
 from enrollment.domain.ports.driving.enrollment import IEnrollment
 from enrollment.domain.model.student import Student
 from enrollment.domain.model.classroom import Classroom
@@ -6,10 +7,10 @@ from enrollment.domain.ports.driven.classroom_repository import IClassroomReposi
 from enrollment.domain.ports.driven.enrollment_repository import IEnrollmentRepository
 from enrollment.domain.ports.driven.event_bus_publisher import IEventBusPublisher
 from enrollment.domain.ports.driven.payment_note_repository import IPaymentNoteRepository
-
+from enrollment.utils.validator import validator
 from enrollment.domain.events.events import events
 from enrollment.domain.policy.classroom_policy import ClassroomPolicy
-from typing import List
+from typing import List   
 
  
 class EnrollmentService(IEnrollment):
@@ -23,7 +24,6 @@ class EnrollmentService(IEnrollment):
         student = Student(name, email, int(age))
         self.enrollmentRepository.save(student)
         self.event_bus.publish(events.studentEnrolled, {name, email, age})
-        
         print("\n=================================")
         print("==> Sucesso: Usuário inscrito <==")
         print("=================================\n")
@@ -37,7 +37,6 @@ class EnrollmentService(IEnrollment):
     def save_classroom_in_repository(self, classroom: "Classroom"):
         self.classroomRepository.save(classroom.id)
         self.enrollmentRepository.updateClassroomId(classroom.id)
-
         print("\n================================")
         print("==>  Sucesso: Turma criada   <==")
         print("================================\n")

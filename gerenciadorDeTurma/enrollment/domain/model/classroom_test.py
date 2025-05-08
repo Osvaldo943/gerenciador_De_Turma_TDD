@@ -3,15 +3,13 @@ from enrollment.domain.model.classroom import Classroom
 from enrollment.domain.model.student import Student 
 from enrollment.domain.model.student import Email 
 from enrollment.domain.policy.classroom_policy import ClassroomPolicy
-from enrollment.domain.model.classroom import MAXIMUM_NUMBER_OF_STUDENTS
+from enrollment.domain.policy.classroom_policy import MAXIMUM_NUMBER_OF_STUDENTS
 
 class testes(unittest.TestCase):
     def setUp(self): 
         self.students: list[Student] = [
             Student("Joelson dos Santos", Email("joelson@gmail.com"), 24),
             Student("Osvaldo dos Santos", Email("osvaldo@gmail.com"), 24),
-            Student("Lemos dos Santos", Email("lemos@gmail.com"), 24),
-            Student("Rui dos Santos", Email("rui@gmail.com"), 24),
         ]
 
         self.less_students_than_enough = self.students[:MAXIMUM_NUMBER_OF_STUDENTS - 1]

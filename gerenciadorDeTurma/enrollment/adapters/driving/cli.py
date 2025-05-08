@@ -1,3 +1,4 @@
+import re
 from enrollment.aplication.service.enrollment_service import EnrollmentService
 from enrollment.domain.model.student import Student
 from enrollment.utils.clean_screen import clean_screen
@@ -24,10 +25,20 @@ class CLI:
                 if(option == '1'):
                     printTitle(100, 40, "Inscrição do aluno")
                     name = input("\nDigite o teu nome: ")
-                    email = input("Digite o teu email: ")
-                    age = int(input("Digite a tua idade: "))
                     
-                    self.enrollmentService.enroll(name, email, age)    
+                    while name == "":
+                        name = input("\nDigite um nome válido, por favor: ")
+                    
+                    email = input("Digite o teu email: ")
+                    while not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", email):
+                        email = input("\nDigite um email válido, por favor: ")
+                        
+                    age = (input("Digite a tua idade: "))
+                    
+                    while int(age) < 0:
+                        age = input("\nDigite uma idade válido, por favor: ")
+                    
+                    self.enrollmentService.enroll(name, email, int(age))    
                 
                 if(option == '2'):
                     printTitle(130, 55, "Todos os alunos no sistema")

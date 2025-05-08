@@ -21,7 +21,7 @@ class PaymentNoteService:
             paymentNotes.append(newPaymentNote)
             self.eventBus.publish(events.studentNotified, student)
         
-        print("Notificação: Nota de pagamento gerada para todos alunos da última turma criada")
+        print("\n==> Notificação: Notas de pagamento geradas")
         self.eventBus.publish(events.paymentNoteGenerated, paymentNotes)
         
     def getAllPaymentNote(self)-> List["PaymentNote"]:
